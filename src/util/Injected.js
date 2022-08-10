@@ -48,6 +48,9 @@ exports.ExposeStore = (moduleRaidStr) => {
     window.Store.JoinInviteV4 = window.mR.findModule('sendJoinGroupViaInviteV4')[0];
     window.Store.findCommonGroups = window.mR.findModule('findCommonGroups')[0].findCommonGroups;
     window.Store.StatusUtils = window.mR.findModule('setMyStatus')[0];
+    window.Store.ConversationMsgs = window.mR.findModule('loadEarlierMsgs')[0];
+    window.Store.sendReactionToMsg = window.mR.findModule('sendReactionToMsg')[0].sendReactionToMsg;
+    window.Store.createOrUpdateReactionsModule = window.mR.findModule('createOrUpdateReactions')[0];
     window.Store.StickerTools = {
         ...window.mR.findModule('toWebpSticker')[0],
         ...window.mR.findModule('addWebpMetadata')[0]
@@ -98,7 +101,6 @@ exports.LoadUtils = () => {
             delete options.attachment;
             delete options.sendMediaAsSticker;
         }
-
         let quotedMsgOptions = {};
         if (options.quotedMessageId) {
             let quotedMessage = window.Store.Msg.get(options.quotedMessageId);
@@ -417,7 +419,7 @@ exports.LoadUtils = () => {
     };
 
     window.WWebJS.getChats = async () => {
-        const chats = window.Store.Chat._models;
+        const chats = window.Store.Chat.getModelsArray();
 
         const chatPromises = chats.map(chat => window.WWebJS.getChatModel(chat));
         return await Promise.all(chatPromises);
@@ -449,7 +451,7 @@ exports.LoadUtils = () => {
     };
 
     window.WWebJS.getContacts = () => {
-        const contacts = window.Store.Contact._models;
+        const contacts = window.Store.Contact.getModelsArray();
         return contacts.map(contact => window.WWebJS.getContactModel(contact));
     };
 
@@ -478,6 +480,20 @@ exports.LoadUtils = () => {
         }
         return window.btoa(binary);
     };
+
+    window.WWebJS.arrayBufferToBase64Async = (arrayBuffer) =>
+        new Promise((resolve, reject) => {
+            const blob = new Blob([arrayBuffer], {
+                type: 'application/octet-stream',
+            });
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const [, data] = fileReader.result.split(',');
+                resolve(data);
+            };
+            fileReader.onerror = (e) => reject(e);
+            fileReader.readAsDataURL(blob);
+        });
 
     window.WWebJS.getFileHash = async (data) => {
         let buffer = await data.arrayBuffer();
@@ -542,7 +558,7 @@ exports.LoadUtils = () => {
     };
 
     window.WWebJS.getLabels = () => {
-        const labels = window.Store.Label._models;
+        const labels = window.Store.Label.getModelsArray();
         return labels.map(label => window.WWebJS.getLabelModel(label));
     };
 
