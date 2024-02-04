@@ -126,6 +126,9 @@ class Client extends EventEmitter {
             referer: 'https://whatsapp.com/'
         });
 
+        await this.authStrategy.afterBrowserInitialized();
+        await this.initWebVersionCache();
+        
         await page.evaluate(`function getElementByXpath(path) {
             return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
           }`);
