@@ -62,14 +62,6 @@ class GroupChat extends Chat {
     }
 
     /**
-     * Indicates if the user can send message to the chat
-     * @type {Boolean}
-     */
-    get canSend() {
-        return this.groupMetadata.canSend;
-    }
-
-    /**
      * An object that handles the result for {@link addParticipants} method
      * @typedef {Object} AddParticipantsResult
      * @property {number} code The code of the result
