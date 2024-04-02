@@ -764,7 +764,7 @@ class Client extends EventEmitter {
                         body: versionContent
                     }); 
                 } else {
-                    req.continue();
+                    return req.continue();
                 }
             });
         } else {
