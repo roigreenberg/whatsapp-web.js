@@ -106,7 +106,7 @@ class GroupChat extends Chat {
                 419: 'The participant can\'t be added because the group is full'
             };
 
-            await window.Store.GroupMetadata.queryAndUpdate(groupWid);
+            await window.Store.GroupQueryAndUpdate(groupWid);
             const groupMetadata = group.groupMetadata;
             const groupParticipants = groupMetadata?.participants;
 
@@ -160,7 +160,7 @@ class GroupChat extends Chat {
 
                 if (autoSendInviteV4 && rpcResultCode === 403) {
                     let userChat, isInviteV4Sent = false;
-                    window.Store.ContactCollection.gadd(pWid, { silent: true });
+                    window.Store.Contact.gadd(pWid, { silent: true });
 
                     if (rpcResult.name === 'ParticipantRequestCodeCanBeSent' &&
                         (userChat = await window.Store.Chat.find(pWid))) {
