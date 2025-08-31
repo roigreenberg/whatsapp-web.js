@@ -440,7 +440,7 @@ class Client extends EventEmitter {
                 return;
             }
 
-                const message = new Message(this, msg);
+            const message = new Message(this, msg);
 
             /**
                  * Emitted when a new message is created, which may include the current user's own messages.
@@ -449,7 +449,7 @@ class Client extends EventEmitter {
                  */
             this.emit(Events.MESSAGE_CREATE, message);
 
-                if (msg.id.fromMe) return;
+            if (msg.id.fromMe) return;
 
             /**
                  * Emitted when a new message is received.
@@ -459,7 +459,7 @@ class Client extends EventEmitter {
             this.emit(Events.MESSAGE_RECEIVED, message);
         });
 
-            let last_message;
+        let last_message;
 
         await exposeFunctionIfAbsent(this.pupPage, 'onChangeMessageTypeEvent', (msg) => {
 
@@ -483,13 +483,13 @@ class Client extends EventEmitter {
                 this.emit(Events.MESSAGE_REVOKED_EVERYONE, message, revoked_msg);
             }
 
-            });
+        });
 
         await exposeFunctionIfAbsent(this.pupPage, 'onChangeMessageEvent', (msg) => {
 
-                if (msg.type !== 'revoked') {
-                    last_message = msg;
-                }
+            if (msg.type !== 'revoked') {
+                last_message = msg;
+            }
 
             /**
                  * The event notification that is received when one of
@@ -503,12 +503,12 @@ class Client extends EventEmitter {
                  */
             const isContact = msg.type === 'notification_template' && msg.subtype === 'change_number';
 
-                if (isParticipant || isContact) {
-                    /** @type {GroupNotification} object does not provide enough information about this event, so a @type {Message} object is used. */
-                    const message = new Message(this, msg);
+            if (isParticipant || isContact) {
+                /** @type {GroupNotification} object does not provide enough information about this event, so a @type {Message} object is used. */
+                const message = new Message(this, msg);
 
-                    const newId = isParticipant ? msg.recipients[0] : msg.to;
-                    const oldId = isParticipant ? msg.author : msg.templateParams.find(id => id !== newId);
+                const newId = isParticipant ? msg.recipients[0] : msg.to;
+                const oldId = isParticipant ? msg.author : msg.templateParams.find(id => id !== newId);
 
                 /**
                      * Emitted when a contact or a group participant changes their phone number.
@@ -525,9 +525,9 @@ class Client extends EventEmitter {
 
         await exposeFunctionIfAbsent(this.pupPage, 'onRemoveMessageEvent', (msg) => {
 
-                if (!msg.isNewMsg) return;
+            if (!msg.isNewMsg) return;
 
-                const message = new Message(this, msg);
+            const message = new Message(this, msg);
 
             /**
                  * Emitted when a message is deleted by the current user.
@@ -536,11 +536,11 @@ class Client extends EventEmitter {
                  */
             this.emit(Events.MESSAGE_REVOKED_ME, message);
 
-            });
+        });
 
         await exposeFunctionIfAbsent(this.pupPage, 'onMessageAckEvent', (msg, ack) => {
 
-                const message = new Message(this, msg);
+            const message = new Message(this, msg);
 
             /**
                  * Emitted when an ack event occurrs on message type.
@@ -550,7 +550,7 @@ class Client extends EventEmitter {
                  */
             this.emit(Events.MESSAGE_ACK, message, ack);
 
-            });
+        });
 
         await exposeFunctionIfAbsent(this.pupPage, 'onChatUnreadCountEvent', async (data) =>{
             const chat = await this.getChatById(data.id);
@@ -563,7 +563,7 @@ class Client extends EventEmitter {
 
         await exposeFunctionIfAbsent(this.pupPage, 'onMessageMediaUploadedEvent', (msg) => {
 
-                const message = new Message(this, msg);
+            const message = new Message(this, msg);
 
             /**
                  * Emitted when media has been uploaded for a message sent by the client.
@@ -581,17 +581,17 @@ class Client extends EventEmitter {
                  */
             this.emit(Events.STATE_CHANGED, state);
 
-                const ACCEPTED_STATES = [WAState.CONNECTED, WAState.OPENING, WAState.PAIRING, WAState.TIMEOUT];
+            const ACCEPTED_STATES = [WAState.CONNECTED, WAState.OPENING, WAState.PAIRING, WAState.TIMEOUT];
 
-                if (this.options.takeoverOnConflict) {
-                    ACCEPTED_STATES.push(WAState.CONFLICT);
+            if (this.options.takeoverOnConflict) {
+                ACCEPTED_STATES.push(WAState.CONFLICT);
 
-                    if (state === WAState.CONFLICT) {
-                        setTimeout(() => {
-                            this.pupPage.evaluate(() => window.Store.AppState.takeover());
-                        }, this.options.takeoverTimeoutMs);
-                    }
+                if (state === WAState.CONFLICT) {
+                    setTimeout(() => {
+                        this.pupPage.evaluate(() => window.Store.AppState.takeover());
+                    }, this.options.takeoverTimeoutMs);
                 }
+            }
 
             if (!ACCEPTED_STATES.includes(state)) {
                 /**
@@ -608,7 +608,7 @@ class Client extends EventEmitter {
         await exposeFunctionIfAbsent(this.pupPage, 'onBatteryStateChangedEvent', (state) => {
             const { battery, plugged } = state;
 
-                if (battery === undefined) return;
+            if (battery === undefined) return;
 
             /**
                  * Emitted when the battery percentage for the attached device changes. Will not be sent if using multi-device.
@@ -656,9 +656,9 @@ class Client extends EventEmitter {
                      * @param {?number} reaction.ack - Ack
                      */
 
-                    this.emit(Events.MESSAGE_REACTION, new Reaction(this, reaction));
-                }
-            });
+                this.emit(Events.MESSAGE_REACTION, new Reaction(this, reaction));
+            }
+        });
 
         await exposeFunctionIfAbsent(this.pupPage, 'onRemoveChatEvent', async (chat) => {
             const _chat = await this.getChatById(chat.id);
@@ -829,7 +829,7 @@ class Client extends EventEmitter {
                         body: versionContent
                     }); 
                 } else {
-                    return req.continue();
+                    req.continue();
                 }
             });
         } else {
